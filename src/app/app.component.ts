@@ -1,10 +1,31 @@
-import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
+
 })
-export class AppComponent {
-  title = 'buscador';
+export class AppComponent implements OnInit{
+  
+
+  handleSearch(value: string){
+   console.log(value);
+    this.filtro_valor.next(value);
+
+  }
+
+  filtro_valor = new BehaviorSubject<string>('')
+
+  constructor(
+    private _http: HttpClient
+  ){ }
+  ngOnInit(){
+    this._http.get('https://jsonplaceholder.typicode.com/users').subscribe(
+    (users :any[])  => this.usuarios.next(users))
+  }
+  usuarios = new BehaviorSubject<any[]>([]);
 }
